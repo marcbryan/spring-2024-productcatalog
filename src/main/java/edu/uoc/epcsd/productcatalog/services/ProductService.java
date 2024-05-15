@@ -40,4 +40,20 @@ public class ProductService {
 
         return productRepository.save(product);
     }
+
+    public List<Product> findByNameLikeIgnoreCase(String name) {
+        return productRepository.findByNameLikeIgnoreCase("%" + name + "%");
+    }
+
+    public List<Product> findByDescriptionLikeIgnoreCase(String description) {
+        return productRepository.findByDescriptionLikeIgnoreCase("%" + description + "%");
+    }
+
+    public List<Product> findByBrandLikeIgnoreCase(String brand) {
+        return productRepository.findByBrandLikeIgnoreCase("%" + brand + "%");
+    }
+
+    public List<Product> findByModelLikeIgnoreCase(String model) {
+        return productRepository.findByModelLikeIgnoreCase("%" + model + "%");
+    }
 }
