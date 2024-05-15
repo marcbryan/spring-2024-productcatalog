@@ -56,4 +56,8 @@ public class ProductService {
     public List<Product> findByModelLikeIgnoreCase(String model) {
         return productRepository.findByModelLikeIgnoreCase("%" + model + "%");
     }
+
+    public List<Product> findByCategoryNameLikeIgnoreCase(String category) {
+        return productRepository.findByCategoryNameLikeIgnoreCase("%" + category + "%");
+    }
 }

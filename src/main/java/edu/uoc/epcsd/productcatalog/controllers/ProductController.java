@@ -67,8 +67,7 @@ public class ProductController {
 
     // 2. query products by name. He añadido los diferentes criterios como se indica en la PRA1
     @GetMapping("/search")
-    //@ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<GetProductResponse>> findProductsByCriteria(@RequestParam(required = false) String name, @RequestParam(required = false) String description, @RequestParam(required = false) String brand, @RequestParam(required = false) String model) {
+    public ResponseEntity<List<GetProductResponse>> findProductsByCriteria(@RequestParam(required = false) String name, @RequestParam(required = false) String description, @RequestParam(required = false) String brand, @RequestParam(required = false) String model, @RequestParam(required = false) String category) {
         log.trace("findProductsByCriteria");
 
         if (name != null) {
@@ -87,13 +86,18 @@ public class ProductController {
             List<Product> products = productService.findByModelLikeIgnoreCase(model);
             return generateProductListResponse(products);
         }
+        // 3. query products by category/subcategory
+        else if (category != null) {
+            List<Product> products = productService.findByCategoryNameLikeIgnoreCase(category);
+            return generateProductListResponse(products);
+        }
         else
             // No ha enviado ningún parámetro
             return ResponseEntity.badRequest().build();
     }
-    // 3. query products by category/subcategory
 
-    // Método para generar la lista de productos que se enviará
+
+    // Método para generar la respuesta que se enviará
     private ResponseEntity<List<GetProductResponse>> generateProductListResponse(List<Product> products) {
         if (products.isEmpty())
             return ResponseEntity.notFound().build();
