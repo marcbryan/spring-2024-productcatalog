@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -62,8 +63,18 @@ public class ProductController {
         return ResponseEntity.created(uri).body(productId);
     }
 
-    // TODO: add the code for the missing system operations here:
     // 1. remove product (use DELETE HTTP verb). Must remove the associated items
+    @DeleteMapping("/{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Integer> deleteProduct(@PathVariable @NotNull Integer productId) {
+        log.trace("deleteProduct");
+
+        Optional<Product> product = productService.findById(Long.valueOf(productId));
+        if (product.isEmpty())
+            return new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
+        else
+            return new ResponseEntity<>(productService.deleteProduct(productId), HttpStatus.OK);
+    }
 
     // 2. query products by name. He añadido los diferentes criterios como se indica en la PRA1
     @GetMapping("/search")

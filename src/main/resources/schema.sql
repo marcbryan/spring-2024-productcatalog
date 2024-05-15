@@ -14,3 +14,17 @@ VALUES ('Canon 500D', 'Cámara de fotos Canon 500D', 100, 'Canon', '500D', 2)
      , ('Foco Phillips 120L', 'Foco LED Phillips de luz blanca 120W. Sin difusor', 80, 'Phillips', '120L', 5)
      , ('Foco Phillips 220L', 'Foco LED Phillips de luz blanca 220W. Sin difusor', 120, 'Phillips', '220L', 5)
 ;
+
+-- Inserts de unidades
+INSERT INTO item (serial_number, status, product_id)
+VALUES ('zhUrqrHn', 'OPERATIONAL', 1)
+    , ('jcwu3amz', 'OPERATIONAL', 1)
+    , ('FkJgGYgL', 'OPERATIONAL', 2)
+    , ('hQSgzPNu', 'OPERATIONAL', 2)
+    , ('iE2QyUuJ', 'OPERATIONAL', 3)
+    , ('45hcuFMx', 'OPERATIONAL', 3)
+    , ('ksWe5qxj', 'OPERATIONAL', 4)
+    , ('kSefJwz5', 'OPERATIONAL', 4)
+    , ('MuSivXWN', 'OPERATIONAL', 5)
+    , ('euebfzrk', 'OPERATIONAL', 5)
+;

@@ -1,11 +1,13 @@
 package edu.uoc.epcsd.productcatalog.services;
 
 import edu.uoc.epcsd.productcatalog.entities.Category;
+import edu.uoc.epcsd.productcatalog.entities.ItemStatus;
 import edu.uoc.epcsd.productcatalog.entities.Product;
 import edu.uoc.epcsd.productcatalog.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,5 +61,10 @@ public class ProductService {
 
     public List<Product> findByCategoryNameLikeIgnoreCase(String category) {
         return productRepository.findByCategoryNameLikeIgnoreCase("%" + category + "%");
+    }
+
+    @Transactional
+    public int deleteProduct(int productId) {
+        return productRepository.deleteProduct(productId, ItemStatus.NOT_OPERATIONAL.name());
     }
 }
