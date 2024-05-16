@@ -55,10 +55,20 @@ public class ItemController {
         return ResponseEntity.created(uri).body(serialNumber);
     }
 
-    // TODO: add the code for the missing system operations here:
     // 1. setOperational
     //  * use the correct HTTP verb
     //  * must ensure the item exists
     //  * if the new status is OPERATIONAL, must send a UNIT_AVAILABLE message to the kafka message queue (see ItemService.createItem method)
+    @PutMapping("/{serialNumber}")
+    public ResponseEntity<Item> setOperational(@PathVariable @NotNull String serialNumber, @RequestBody Boolean operational) {
+        log.trace("setOperational");
 
+        log.trace("updating item, operative={}", operational);
+
+        Item item = itemService.setOperational(serialNumber, operational);
+        if (item != null)
+            return new ResponseEntity<>(item, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
 }

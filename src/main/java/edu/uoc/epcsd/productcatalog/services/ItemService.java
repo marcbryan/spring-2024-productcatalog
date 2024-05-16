@@ -11,6 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,16 +35,41 @@ public class ItemService {
         return itemRepository.findBySerialNumber(serialNumber);
     }
 
+    @Transactional
     public Item setOperational(String serialNumber, @RequestBody Boolean operational) {
+        Optional<Item> item = itemRepository.findBySerialNumber(serialNumber);
 
-        // TODO: complete this method:
+        // Comprobamos si la unidad existe
+        if (item.isEmpty())
+            return null;
+        else {
+            int affectedRows = -1;
 
-        return null;
+            if (operational)
+                affectedRows = itemRepository.setOperational(serialNumber, ItemStatus.OPERATIONAL);
+            else
+                affectedRows = itemRepository.setOperational(serialNumber, ItemStatus.NOT_OPERATIONAL);
 
+            if (affectedRows > 0) {
+                item = itemRepository.findBySerialNumber(serialNumber);
+                if (item.isPresent()) {
+                    if (operational) {
+                        long productId = item.get().getProduct().getId();
+                        // Enviamos el mensaje UNIT_AVAILABLE a la cola de mensajes de Kafka
+                        productKafkaTemplate.send(KafkaConstants.PRODUCT_TOPIC + KafkaConstants.SEPARATOR + KafkaConstants.UNIT_AVAILABLE, ProductMessage.builder().productId(productId).build());
+                    }
+
+                    return item.get();
+                }
+            }
+
+            return null;
+        }
     }
+
     public Item createItem(Long productId, String serialNumber) {
 
-        // bu default a new unit is OPERATIONAL
+        // by default a new unit is OPERATIONAL
         Item item = Item.builder().serialNumber(serialNumber).status(ItemStatus.OPERATIONAL).build();
 
         Optional<Product> product = productService.findById(productId);
