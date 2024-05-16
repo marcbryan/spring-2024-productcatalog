@@ -25,6 +25,9 @@ public final class GetProductResponse {
 
     private final String categoryName;
 
+    // Atributo donde guardaremos el número de unidades de un producto
+    private final long units;
+
     public static GetProductResponse fromDomain(Product product) {
         return GetProductResponse.builder()
                 .id(product.getId())
@@ -37,4 +40,17 @@ public final class GetProductResponse {
                 .build();
     }
 
+    // Método para devolver el detalle de un producto (se añade el número de unidades)
+    public static GetProductResponse detailed(Product product) {
+        return GetProductResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .dailyPrice(product.getDailyPrice())
+                .brand(product.getBrand())
+                .model(product.getModel())
+                .categoryName(product.getCategory().getName())
+                .units(product.getItemList().size())
+                .build();
+    }
 }

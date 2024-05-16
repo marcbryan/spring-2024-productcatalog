@@ -71,4 +71,14 @@ public class ItemController {
         else
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
+
+    // Devuelve lo mismo que cuando se busca por el id, no se que más información se podría añadir
+    @GetMapping("/{serialNumber}/details")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Item> getItemDetails(@PathVariable @NotNull String serialNumber) {
+        log.trace("getItemDetails");
+
+        return itemService.findBySerialNumber(serialNumber).map(item -> ResponseEntity.ok().body(item))
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

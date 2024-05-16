@@ -69,6 +69,7 @@ public class ProductController {
     public ResponseEntity<Integer> deleteProduct(@PathVariable @NotNull Integer productId) {
         log.trace("deleteProduct");
 
+        log.trace("Deleting product {}", productId);
         Optional<Product> product = productService.findById(Long.valueOf(productId));
         if (product.isEmpty())
             return new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
@@ -105,6 +106,16 @@ public class ProductController {
         else
             // No ha enviado ningún parámetro
             return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/{productId}/details")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<GetProductResponse> getProductDetails(@PathVariable @NotNull Long productId) {
+        log.trace("getProductDetails");
+
+        // Es muy similar al de obtener producto por id, pero además devolvemos el número de unidades
+        return productService.findById(productId).map(product -> ResponseEntity.ok().body(GetProductResponse.detailed(product)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
 
