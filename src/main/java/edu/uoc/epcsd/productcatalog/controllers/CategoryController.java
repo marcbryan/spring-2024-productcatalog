@@ -1,6 +1,7 @@
 package edu.uoc.epcsd.productcatalog.controllers;
 
 import edu.uoc.epcsd.productcatalog.controllers.dtos.CreateCategoryRequest;
+import edu.uoc.epcsd.productcatalog.controllers.dtos.GetCategoryResponse;
 import edu.uoc.epcsd.productcatalog.entities.Category;
 import edu.uoc.epcsd.productcatalog.services.CategoryService;
 import lombok.extern.log4j.Log4j2;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
@@ -46,8 +48,41 @@ public class CategoryController {
         return ResponseEntity.created(uri).body(categoryId);
     }
 
-    // TODO: add the code for the missing system operations here:
-    // 1. query categories by name
-    // 2. query categories by description
-    // 3. query categories by parent category (must return all categories under the category specified by the id parameter)
+    @GetMapping("/search")
+    public ResponseEntity<List<GetCategoryResponse>> findCategoriesByCriteria(@RequestParam(required = false) String name, @RequestParam(required = false) String description, @RequestParam(required = false) Long parentCategory) {
+        log.trace("findCategoriesByCriteria");
+
+        // 1. query categories by name
+        if (name != null) {
+            List<Category> categories = categoryService.findByNameLikeIgnoreCase("%" + name + "%");
+            return generateCategoryListResponse(categories);
+        }
+        // 2. query categories by description
+        else if (description != null) {
+            List<Category> categories = categoryService.findByDescriptionLikeIgnoreCase("%" + description + "%");
+            return generateCategoryListResponse(categories);
+        }
+        // 3. query categories by parent category (must return all categories under the category specified by the id parameter)
+        else if (parentCategory != null) {
+            List<Category> categories = categoryService.findByParentId(parentCategory);
+            return generateCategoryListResponse(categories);
+        }
+        else
+            // No ha enviado ningún parámetro
+            return ResponseEntity.badRequest().build();
+    }
+
+
+    // Método para generar la respuesta que se enviará
+    private ResponseEntity<List<GetCategoryResponse>> generateCategoryListResponse(List<Category> categories) {
+        if (categories.isEmpty())
+            return ResponseEntity.notFound().build();
+        else {
+            List<GetCategoryResponse> response = new ArrayList<>();
+            for (Category category : categories)
+                response.add(GetCategoryResponse.fromDomain(category));
+
+            return new ResponseEntity<List<GetCategoryResponse>>(response, HttpStatus.OK);
+        }
+    }
 }

@@ -36,4 +36,16 @@ public class CategoryService {
 
         return categoryRepository.save(category);
     }
+
+    public List<Category> findByNameLikeIgnoreCase(String name) {
+        return categoryRepository.findByNameLikeIgnoreCase("%" + name + "%");
+    }
+
+    public List<Category> findByDescriptionLikeIgnoreCase(String description) {
+        return categoryRepository.findByDescriptionLikeIgnoreCase("%" + description + "%");
+    }
+
+    public List<Category> findByParentId(long parentId) {
+        return categoryRepository.findByParentId(parentId);
+    }
 }
