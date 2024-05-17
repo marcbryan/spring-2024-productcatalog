@@ -67,4 +67,12 @@ public class ProductService {
     public int deleteProduct(int productId) {
         return productRepository.deleteProduct(productId, ItemStatus.NOT_OPERATIONAL.name());
     }
+
+    /**
+     * Método para buscar un producto por marca y modelo, sirve para comprobar que el usuario crea una oferta de un producto existente.
+     * No tiene endpoint.
+     */
+    public Optional<Product> findByBrandAndModel(String brand, String model) {
+        return productRepository.findByBrandAndModel(brand, model);
+    }
 }

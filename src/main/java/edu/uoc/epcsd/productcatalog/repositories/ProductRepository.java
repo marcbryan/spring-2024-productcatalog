@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByNameLikeIgnoreCase(String name);
@@ -18,4 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value="UPDATE item SET status = ?2 WHERE product_id = ?1",
            nativeQuery = true)
     int deleteProduct(int productId, String status);
+
+    Optional<Product> findByBrandAndModel(String brand, String model);
 }
